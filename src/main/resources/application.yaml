@@ -1,0 +1,34 @@
+server:
+  port: 8090
+
+spring:
+  ai:
+    openai:
+      api-key: ${OPENAI_API_KEY}
+      chat:
+        options:
+          model: gpt-4o-mini
+          temperature: 0.3
+          max-tokens: 2000
+
+boycottpro:
+  env: DEV
+  exportDir: C:/BoycottPro/exports
+  bucket: boycottpro-envs-dev
+  awsProfile: boycottpro-dev-ops
+
+logging:
+  level:
+    com.boycottpro: DEBUG
+    org.springframework.ai: DEBUG
+  pattern:
+    console: "%d{yyyy-MM-dd HH:mm:ss} - %msg%n"
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info,metrics
+  endpoint:
+    health:
+      show-details: always
