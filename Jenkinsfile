@@ -33,7 +33,10 @@ pipeline {
             steps {
                 script {
                     try {
-                        sh './mvnw clean test jacoco:report'
+                        sh '''
+                            chmod +x ./mvnw
+                            ./mvnw clean test jacoco:report
+                        '''
                         echo "✅ Tests and coverage completed successfully"
                     } catch (Exception e) {
                         echo "⚠️ Tests failed but continuing build: ${e.getMessage()}"
@@ -121,6 +124,7 @@ pipeline {
         stage('Package') {
             steps {
                 sh '''
+                    chmod +x ./mvnw
                     echo "Packaging Spring Boot application..."
                     ./mvnw package -DskipTests -B
                 '''
