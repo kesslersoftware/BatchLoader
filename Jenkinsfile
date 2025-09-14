@@ -1,14 +1,7 @@
 pipeline {
     agent any
     
-    tools {
-        maven 'Maven'
-        jdk 'JDK-21'
-    }
-    
-    environment {
-        SONAR_SCANNER_HOME = tool 'SonarQube Scanner'
-    }
+    // Using Maven Wrapper and system Java - no tool configuration required
     
     parameters {
         choice(
