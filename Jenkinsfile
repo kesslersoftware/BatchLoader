@@ -22,7 +22,7 @@ pipeline {
                 checkout scm
                 script {
                     env.BUILD_VERSION = sh(
-                        script: 'echo "${BUILD_NUMBER}-${GIT_COMMIT[0..7]}"',
+                        script: 'echo "${BUILD_NUMBER}-$(echo ${GIT_COMMIT} | cut -c1-7)"',
                         returnStdout: true
                     ).trim()
                 }
