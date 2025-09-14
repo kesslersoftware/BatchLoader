@@ -58,17 +58,14 @@ pipeline {
                         }
                         
                         try {
-                            publishHTML([
-                                allowMissing: true,
-                                alwaysLinkToLastBuild: true,
-                                keepAll: true,
-                                reportDir: 'target/site/jacoco',
-                                reportFiles: 'index.html',
-                                reportName: 'JaCoCo Coverage Report'
-                            ])
-                            echo "✅ JaCoCo coverage report published"
+                            archiveArtifacts(
+                                artifacts: 'target/site/jacoco/**/*',
+                                allowEmptyArchive: true,
+                                fingerprint: false
+                            )
+                            echo "✅ JaCoCo coverage report archived"
                         } catch (Exception e) {
-                            echo "⚠️ Failed to publish JaCoCo report: ${e.getMessage()}"
+                            echo "⚠️ Failed to archive JaCoCo report: ${e.getMessage()}"
                         }
                     }
                 }
