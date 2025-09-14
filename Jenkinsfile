@@ -4,11 +4,6 @@ pipeline {
     // Using Maven Wrapper and system Java - no tool configuration required
     
     parameters {
-        choice(
-            name: 'ENVIRONMENT',
-            choices: ['dev', 'staging', 'test', 'prod'],
-            description: 'Target environment'
-        )
         booleanParam(
             name: 'SKIP_SONAR',
             defaultValue: false,
