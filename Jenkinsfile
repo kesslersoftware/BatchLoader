@@ -48,7 +48,10 @@ pipeline {
                 always {
                     script {
                         try {
-                            publishTestResults testResultsPattern: 'target/surefire-reports/*.xml'
+                            junit(
+                                testResults: 'target/surefire-reports/*.xml',
+                                allowEmptyResults: true
+                            )
                             echo "✅ Test results published successfully"
                         } catch (Exception e) {
                             echo "⚠️ Failed to publish test results: ${e.getMessage()}"
