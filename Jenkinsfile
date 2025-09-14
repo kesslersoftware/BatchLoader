@@ -79,15 +79,29 @@ pipeline {
             steps {
                 script {
                     try {
-                        withSonarQubeEnv('SonarQube') {
+                        // Try withSonarQubeEnv first, fallback to direct execution
+                        try {
+                            withSonarQubeEnv('SonarQube') {
+                                sh '''
+                                    ./mvnw sonar:sonar \\
+                                        -Dsonar.projectKey=${JOB_NAME} \\
+                                        -Dsonar.projectName="${JOB_NAME}" \\
+                                        -Dsonar.projectVersion=${BUILD_VERSION}
+                                '''
+                            }
+                            echo "✅ SonarQube analysis completed successfully"
+                        } catch (Exception sonarEnvError) {
+                            echo "⚠️ withSonarQubeEnv not available, using direct execution"
+                            // Fallback to direct Maven sonar execution
                             sh '''
                                 ./mvnw sonar:sonar \\
+                                    -Dsonar.host.url=http://localhost:9000 \\
                                     -Dsonar.projectKey=${JOB_NAME} \\
                                     -Dsonar.projectName="${JOB_NAME}" \\
                                     -Dsonar.projectVersion=${BUILD_VERSION}
                             '''
+                            echo "✅ SonarQube analysis completed (direct mode)"
                         }
-                        echo "✅ SonarQube analysis completed successfully"
                     } catch (Exception e) {
                         echo "⚠️ SonarQube analysis failed but continuing build: ${e.getMessage()}"
                         currentBuild.result = 'UNSTABLE'
@@ -114,7 +128,8 @@ pipeline {
                             }
                         }
                     } catch (Exception e) {
-                        echo "⚠️ Quality Gate check failed but continuing: ${e.getMessage()}"
+                        echo "⚠️ Quality Gate check not available or failed: ${e.getMessage()}"
+                        echo "📊 SonarQube analysis completed but quality gate check skipped"
                         currentBuild.result = 'UNSTABLE'
                     }
                 }
